@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center my-4 text-light">Blog Posts</h1>
+        
+        <div class="row">
+            {% for post in posts %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow-lg h-100">
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                        {% endif %}
+                        <div class="card-body bg-dark text-light">
+                            <h5 class="card-title">
+                                <a href="{% url 'blog_detail' post.pk %}" class="text-light text-decoration-none">{{ post.title }}</a>
+                            </h5>
+                            <p class="card-text">{{ post.content|truncatewords:20 }}</p>
+                            <p class="text-muted">By <strong>{{ post.author }}</strong> on {{ post.publication_date|date:"F j, Y" }}</p>
+
+                            
+                            <div class="d-flex justify-content-between">
+                                {% if request.user == post.author %}
+                                    <a class="btn btn-sm btn-warning" href="{% url 'blog_update' post.pk %}">Edit</a>
+                                    <a class="btn btn-sm btn-danger" href="{% url 'blog_delete' post.pk %}">Delete</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if request.user.is_authenticated %}
+            <div class="text-center mt-4">
+                <a class="btn btn-primary" href="{% url 'blog_create' %}">New Post</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <style>
+        body {
+            background: #2C3E50; 
+            color: #ecf0f1; 
+            min-height: 100vh;
+            background-size: cover;
+        }
+
+        .container {
+            padding-top: 50px;
+        }
+
+        .card {
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px); 
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-img-top {
+            border-radius: 10px 10px 0 0;
+        }
+
+        .btn-primary {
+            background-color: #2980B9;
+            border-color: #2980B9;
+        }
+
+        .btn-primary:hover {
+            background-color: #3498DB;
+            border-color: #3498DB;
+        }
+
+        .btn-warning {
+            background-color: #f39c12;
+            border-color: #f39c12;
+        }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+            border-color: #e67e22;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            border-color: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+        }
+
+        .card-text {
+            font-family: 'Verdana', sans-serif;
+        }
+
+        .text-light {
+            color: #ecf0f1 !important;
+        }
+    </style>
+{% endblock %}
